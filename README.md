@@ -112,6 +112,7 @@ c) {ProjRoot}/Data/Interfaces/ICarsRepository.cs
 public interface ICarsRepository
 {
     IEnumerable<Car> GetAll();
+	void SetAll( IEnumerable<Car> cars );
     IEnumerable<Car> GetFavourite();
     void SetFavourite( IEnumerable<Car> cars );
 }
