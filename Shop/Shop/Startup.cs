@@ -1,7 +1,8 @@
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.Extensions.DependencyInjection;
-
+using Shop.Data.Interfaces;
+using Shop.Data.Repositories;
 
 namespace Shop
 {
@@ -12,6 +13,8 @@ namespace Shop
         public void ConfigureServices( IServiceCollection services )
         {
             services.AddMvc();
+            services.AddScoped<ICarsRepository, CarsRepository>();
+            services.AddScoped<ICategoriesRepository, CategoriesRepository>();
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.

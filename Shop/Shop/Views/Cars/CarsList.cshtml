@@ -1,0 +1,26 @@
+﻿@using Shop.Data.Models
+@model IEnumerable<Car>
+@{
+    Layout = null;
+}
+
+<!DOCTYPE html>
+
+<html>
+<head>
+    <meta name="viewport" content="width=device-width">
+    <title>List</title>
+</head>
+<body>
+    <h1>Все автомобили</h1>
+    @{
+        foreach ( var car in Model )
+        {
+            <div>
+                <h2>Модель: @car.Name</h2>
+                <p>Цена: @car.Price.ToString( "c" )</p><!--ToString("c") - "c" значит формат отображения денежный-->
+            </div>
+        }
+    }
+</body>
+</html>

@@ -9,6 +9,11 @@ namespace Shop.Data.Repositories
     {
         private readonly ICategoriesRepository _categoriesRepository = new CategoriesRepository();
 
+        public CarsRepository( ICategoriesRepository categoriesRepository )
+        {
+            _categoriesRepository = categoriesRepository;
+        }
+
         public IEnumerable<Car> GetAll()
         {
             return new List<Car>
