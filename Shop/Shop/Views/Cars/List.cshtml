@@ -1,0 +1,11 @@
+﻿<h1>Все автомобили</h1>
+<h3>@Model.CurrentCategory</h3>
+@{
+    foreach ( var car in Model.AllCars )
+    {
+        <div>
+            <h2>Модель: @car.Name</h2>
+            <p>Цена: @car.Price.ToString( "c" )</p><!--ToString("c") - "c" значит формат отображения денежный-->
+        </div>
+    }
+}

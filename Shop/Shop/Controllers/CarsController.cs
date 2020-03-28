@@ -1,5 +1,6 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using Shop.Data.Interfaces;
+using Shop.ViewModels;
 
 namespace Shop.Controllers
 {
@@ -16,8 +17,18 @@ namespace Shop.Controllers
 
         public ViewResult CarsList()
         {
+            ViewBag.Category = "Some New"; // Вместо Category может быть что угодно. Но, сем меньше таких штук, тем лучше
             var cars = _carsRepository.GetAll();
             return View( cars );
+        }
+
+        public ViewResult List()
+        {
+            ViewBag.Title = "Страница с автомобилями";
+            var carsViewModel = new CarsListViewModel();
+            carsViewModel.AllCars = _carsRepository.GetAll();
+            carsViewModel.CurrentCategory = "Автомобили";
+            return View( carsViewModel );
         }
     }
 }
