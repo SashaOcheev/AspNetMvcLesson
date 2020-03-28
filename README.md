@@ -317,6 +317,24 @@ b) Добавляем в адрес ресурc: /Cars/CarList
 c) ?????  
 d) PROFIT  
 
+В дальнейшем мы будем часто запускать проект в режиме отладки, и добавлять /Cars/CarList всякий раз неудобно.  
+Чтобы у нас сразу открывалась нужная страница, можно прописать необходимые параметры в {ProjRoot}/Porperties/aunchSettings.json.  
+Поскольку мы запускаем проект в конфигурации IIS Express, то это секцию и правим:  
+```diff
+...
+  "profiles": {
+    "IIS Express": {
+      "commandName": "IISExpress",
+      "launchBrowser": true,
+      "environmentVariables": {
+        "ASPNETCORE_ENVIRONMENT": "Development"
+      },
++     "launchUrl": "cars/list"
+    },
+    "Shop": {
+...
+```
+
 #### 5. ViewBag
 a) Добавить ViewBag в метод CarList():
 ```diff
@@ -351,7 +369,7 @@ public class CarsListViewModel
     public string CurrentCategory { get; set; }
 }
 ```
-c) Добавить новый метод в CarsController. Здесь диффом показано отличие от метода CarsList()
+c) Добавить новый метод List() в CarsController. Здесь диффом показано отличие от метода CarsList()
 ```diff
 public ViewResult List()
 {
@@ -391,10 +409,11 @@ d) Добавить вьюху для нового метода: {ProjRoot}/View
 </body>
 </html>
 ```
+e) Также для удобства можно поменять launchUrl в launchSettings.json на "cars/list"
 #### 7. Добавление Layout
 Layout - шаблон, который является основой для других шаблонов
 Создать:
-a) {ProjRoot}/Views/Shared - название обязательно должно быть Shared
+a) {ProjRoot}/Views/Shared - название обязательно должно быть Shared  
 b) В Shared добавить следующим образом:  
 Add Item: Web->ASP.NET RazorLayout -> __Layout.cshtml_. (Лэйауты принято начинать нижним подчеркиванием)
 ```
@@ -499,13 +518,13 @@ public ViewResult List()
 #### 1. Добавляем Bootstrap
 - Bootstrap можно скачать и добавить в проект (наш случай)
 - Можно в Layout добавить ссылку
-- Через NuGet
+- Через NuGet  
 a) Создаем папки для статики (картинки, css, js и т.п):  
 - {ProjRoot}/wwwroot - здесь проект будет искать статику автоматически  
 - {ProjRoot}/img - для картинок  
 - {ProjRoot}/css - для стилкей  
 - {ProjRoot}/js - для javascript-файлов  
-b) Заходим на https://getbootstrap.com/ , скачиваем архив, распкавовыаем его
+b) Заходим на https://getbootstrap.com/ , скачиваем архив, распкавовыаем его  
 - закидываем оттуда bootstrap.min.css в {ProjRoot}/wwwroot/css  
 - аналогичные действия проделываем с js-файлом  
 
@@ -542,7 +561,7 @@ body {
 </head>
 ```
 #### 3. Закидываем картинки
-a) Я скачал пару картинок для mersedec и для ford (адреса картинок взял из CarsRepository). Дальше закинул их в {ProjDir}/wwwroot/img
+a) Я скачал пару картинок для mersedec и для ford (адреса картинок взял из CarsRepository). Дальше закинул их в {ProjDir}/wwwroot/img  
 b) Подключаем картинуи в CarsRepository:
 ```diff
 ...
@@ -563,14 +582,14 @@ new Car
     Name = "Mercedes C class",
     ShortDescription = "Уютный и большой",
     LongDescription = "Удобный автомобиль для городской жизни",
-+   ImageUrl = "/img/mercedec.jpeg",
++   ImageUrl = "/img/mercedes.jpeg",
     Price = 40000,
     IsFavourite = false,
     IsAvailable = false,
     Category = _categoriesRepository.GetAll().Last()
 },
 ```
-#### 4. Тырим дизайн
+#### 4. Заимствуем дизайн
 a) Находим готовые дизайны на getsbootstrap.com. В моем случае это Carousel: https://getbootstrap.com/docs/4.3/examples/carousel/  
 b) Берем оттуда header и footer и вставляем в наш Layout
 ```diff
@@ -630,14 +649,15 @@ c) Обновляем/наполняем List.cshtml
 	}
 </div>
 ```
-d) У нас спряталась надпись "Все автомобили". Надо бы ее вернуть. Обновми Layout:
+d) У нас спряталась надпись "Все автомобили". Надо бы ее вернуть. Обновим Layout:
 ```diff
 ...
     </header>
-+   <div class="container" mt-5>
++   <div class="container mt-5" >
         @RenderBody()
     </div>
     <footer class="container">
 ...
 ```
-Вся информация взята отсюда: https://itproger.com/course/asp-net. Там есть еще пять уроков
+Вся информация взята отсюда: https://itproger.com/course/asp-net. Там есть еще 5 уроков, к каждому уроку видос.
+У насне было работы с формами и отправкой данных на сервер, там все это есть
