@@ -112,7 +112,7 @@ c) {ProjRoot}/Data/Interfaces/ICarsRepository.cs
 public interface ICarsRepository
 {
     IEnumerable<Car> GetAll();
-	void SetAll( IEnumerable<Car> cars );
+    void SetAll( IEnumerable<Car> cars );
     IEnumerable<Car> GetFavourite();
     void SetFavourite( IEnumerable<Car> cars );
 }
@@ -123,22 +123,22 @@ e) {ProjRoot}/Data/CategoriesRepository.cs
 ```
 public class CategoriesRepository : ICategoriesRepository
 {
-	public IEnumerable<Category> GetAll()
-	{
-		return new List<Category>
-		{
-			new Category
-			{
-				Name = "Электромобиль",
-				Description = "Автомобиль с электродвигателем"
-			},
-			new Category
-			{
-				Name = "Классический",
-				Description = "Автособиль с ДВС"
-			}
-		};
-	}
+    public IEnumerable<Category> GetAll()
+    {
+        return new List<Category>
+        {
+            new Category
+            {
+                Name = "Электромобиль",
+                Description = "Автомобиль с электродвигателем"
+            },
+            new Category
+            {
+                Name = "Классический",
+                Description = "Автособиль с ДВС"
+            }
+        };
+    }
 }
 ```
 f) {ProjRoot}/Data/CarsRepository.cs
