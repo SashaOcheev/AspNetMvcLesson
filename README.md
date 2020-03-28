@@ -228,7 +228,7 @@ public class CarsRepository : ICarsRepository
 ## IV - Создание контроллеров и HTML шаблонов
 
 #### 1. Добавляем биндинги
-Startup.ConfigureServices(): добавляем сопоставления интерфейсов и их реализаций:
+a) Startup.ConfigureServices(): добавляем сопоставления интерфейсов и их реализаций:
 ```diff
 public void ConfigureServices( IServiceCollection services )
 {
@@ -236,6 +236,19 @@ public void ConfigureServices( IServiceCollection services )
 +	services.AddScoped<ICarsRepository, CarsRepository>();
 +	services.AddScoped<ICategoriesRepository, CategoriesRepository>();
 }
+```
+b) Теперь мы можем не создавать CategoriesRepository через new в CarsRepositories.  
+Объявим конструктор с необходимыми зависимостями, а фреймворк сам прокинет нужный экземпляр
+```diff
+public class CarsRepository : ICarsRepository
+{
+-   private readonly ICategoriesRepository _categoriesRepository = new CategoriesRepository();
++   private readonly ICategoriesRepository _categoriesRepository;
+
++    public CarsRepository( ICategoriesRepository categoriesRepository )
++    {
++        _categoriesRepository = categoriesRepository;
++    }
 ```
 
 #### 2. Добавляем контроллер
