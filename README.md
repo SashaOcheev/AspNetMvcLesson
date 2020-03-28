@@ -47,18 +47,21 @@ public void ConfigureServices( IServiceCollection services )
 }
 ```
 - Confgire() для конфигурации модулей
-```
-app.UseDeveloperExceptionPage(); // чтобы видеть ошибки
-app.UseStatusCodePages(); // отображать код запроса
-app.UseStaticFiles(); // отображать css, картинки и прочее
-app.UseRouting(); // Настроить маршрутизацию
-app.UseEndpoints( endpoints =>
+```diff
+public void Configure( IApplicationBuilder app, IWebHostEnvironment env )
 {
-endpoints.MapControllerRoute(
-		name: "default",
-		pattern: "{controller}/{action}"
-	);
-} );
++	app.UseDeveloperExceptionPage(); // чтобы видеть ошибки
++	app.UseStatusCodePages(); // отображать код запроса
++	app.UseStaticFiles(); // отображать css, картинки и прочее
++	app.UseRouting(); // Настроить маршрутизацию
++	app.UseEndpoints( endpoints =>
++	{
++		endpoints.MapControllerRoute(
++			name: "default",
++			pattern: "{controller}/{action}"
++		);
++	} );
+}
   ```
 
 ## III - Создание моделей и интерфейсов в ASP.NET
@@ -80,17 +83,17 @@ public class Category
 ```
 d) {ProjRoot}/Data/Models/Car.cs - Товары (автомобили)
 ```
-    public class Car
-    {
-        public string Name { get; set; }
-        public string ShortDescription { get; set; }
-        public string LongDescription { get; set; }
-        public string ImageUrl { get; set; }
-        public ushort Price { get; set; }
-        public bool IsFavourite { get; set; } // отображение на главной
-        public bool IsAvailable { get; set; } // доступен ли для продажи
-		public Category Category { get; set; }
-    }
+public class Car
+{
+	public string Name { get; set; }
+	public string ShortDescription { get; set; }
+	public string LongDescription { get; set; }
+	public string ImageUrl { get; set; }
+	public ushort Price { get; set; }
+	public bool IsFavourite { get; set; } // отображение на главной
+	public bool IsAvailable { get; set; } // доступен ли для продажи
+	public Category Category { get; set; }
+}
 ```
 
 #### 3. Сервисы для работы с данными - репозитории
