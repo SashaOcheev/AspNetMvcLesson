@@ -1,7 +1,7 @@
 ﻿using Shop.Data.Models;
 using System.Collections.Generic;
 
-namespace Shop.Data.Intefaces
+namespace Shop.Data.Interfaces
 {
     public interface ICarsRepository
     {
