@@ -34,21 +34,31 @@ Startup.cs - инфраструктурные вещи, настройка ок�
 
 #### 2. Добавляем библиотеки для работы
 С помощью __NuGet__ (рассказать чуть-чуть) ставим следующие либы:
-- Microsoft.AspNetCore.StaticFiles (Изображения, стили)ъ
-- AspNet.MVC (для работы с шаблоном MVC)
+- Microsoft.AspNetCore.StaticFiles (Изображения, стили)
+- AspNet.AspNetCore.Mvc.Core (для работы с шаблоном MVC)
 
 #### 3. Конфигурим Startup
 Startup.cs
 - ConfigureServices() для регистрации модулей
-```
-services.AddMvc();
+```diff
+public void ConfigureServices( IServiceCollection services )
+{
++	services.AddMvc();
+}
 ```
 - Confgire() для конфигурации модулей
 ```
 app.UseDeveloperExceptionPage(); // чтобы видеть ошибки
 app.UseStatusCodePages(); // отображать код запроса
 app.UseStaticFiles(); // отображать css, картинки и прочее
-app.UseMvcWithDefaultRoute(); // отслеживать URL адрес. Если у нас нет контроллера и вида будет URL по умолчанию (контроллер Home/index.html)
+app.UseRouting(); // Настроить маршрутизацию
+app.UseEndpoints( endpoints =>
+{
+endpoints.MapControllerRoute(
+		name: "default",
+		pattern: "{controller}/{action}"
+	);
+} );
   ```
 
 ## III - Создание моделей и интерфейсов в ASP.NET
@@ -60,7 +70,7 @@ app.UseMvcWithDefaultRoute(); // отслеживать URL адрес. Если
 Создать:  
 a) {ProjRoot}/Data - папка для работы с бизнем-моделью  
 b) {ProjRoot}/Data/Models - сюда будем складывать модели  
-c) {ProjRoot}/Data/Model/Category.cs - Категории (Электрические, ДВС)  
+c) {ProjRoot}/Data/Models/Category.cs - Категории (Электрические, ДВС)  
 ```
 public class Category
 {
@@ -68,7 +78,7 @@ public class Category
     public string Description { get; set; }
 }
 ```
-d) {ProjRoot}/Data/Model/Car.cs - Товары (автомобили)
+d) {ProjRoot}/Data/Models/Car.cs - Товары (автомобили)
 ```
     public class Car
     {
@@ -78,7 +88,8 @@ d) {ProjRoot}/Data/Model/Car.cs - Товары (автомобили)
         public string ImageUrl { get; set; }
         public ushort Price { get; set; }
         public bool IsFavourite { get; set; } // отображение на главной
-        public bool IsAvailable { get; set; } // доступен ли
+        public bool IsAvailable { get; set; } // доступен ли для продажи
+		public Category Category { get; set; }
     }
 ```
 
@@ -105,6 +116,28 @@ public interface ICarsRepository
 
 d) {ProjRoot}/Data/Repositories - реализации  
 e) {ProjRoot}/Data/CategoriesRepository.cs
+```
+public class CategoriesRepository : ICategoriesRepository
+{
+	public IEnumerable<Category> GetAll()
+	{
+		return new List<Category>
+		{
+			new Category
+			{
+				Name = "Электромобиль",
+				Description = "Автомобиль с электродвигателем"
+			},
+			new Category
+			{
+				Name = "Классический",
+				Description = "Автособиль с ДВС"
+			}
+		};
+	}
+}
+```
+f) {ProjRoot}/Data/CarsRepository.cs
 ```
 public class CarsRepository : ICarsRepository
 {
@@ -191,11 +224,14 @@ public class CarsRepository : ICarsRepository
 ## IV - Создание контроллеров и HTML шаблонов
 
 #### 1. Добавляем биндинги
-Startup.ConfigureServices(): добавляем биндинги:
-```
-//Добавить сопоставление интерфейсов и их реализаций
-services.AddTransient<ICarsRepository, CarsRepository>();
-services.AddTransient<ICategoriesRepository, CategoriesRepository>();
+Startup.ConfigureServices(): добавляем сопоставления интерфейсов и их реализаций:
+```diff
+public void ConfigureServices( IServiceCollection services )
+{
+	services.AddMvc();
++	services.AddScoped<ICarsRepository, CarsRepository>();
++	services.AddScoped<ICategoriesRepository, CategoriesRepository>();
+}
 ```
 
 #### 2. Добавляем контроллер
@@ -204,7 +240,7 @@ b) {ProjRoot}/Controllers/CarsController.cs
 Здесб возвращается ViewResult - HTML страничка  
 ```
 using Microsoft.AspNetCore.Mvc;
-…
+...
 public class CarsController : Controller
 {
     private readonly ICarsRepository _carsRepository;
@@ -250,7 +286,7 @@ c) {ProjRoot}/Views/Cars/CarsList.cshtml - Сам шаблон Empty do not sele
         {
             <div>
                 <h2>Модель: @car.Name</h2>
-                <p>Цена: @car.Price.ToString("c")</p><!--ToString("c") - c значит формат денежный--></p>
+                <p>Цена: @car.Price.ToString("c")</p><!--ToString("c") - "c" значит формат отображения денежный-->
             </div>
         }
     }
@@ -260,7 +296,7 @@ c) {ProjRoot}/Views/Cars/CarsList.cshtml - Сам шаблон Empty do not sele
 
 #### 4. Смотрим результат
 a) Запускаем проект в режиме отладки в конфигурации IIS Express  
-b) Добавляем в адрес ресрус: /Cars/CarList  
+b) Добавляем в адрес ресурc: /Cars/CarList  
 c) ?????  
 d) PROFIT  
 
@@ -331,7 +367,7 @@ d) Добавить вьюху для нового метода: {ProjRoot}/View
         {
             <div>
                 <h2>Модель: @car.Name</h2>
-                <p>Цена: @car.Price.ToString( "c" )</p><!--ToString("c") - c значит формат денежный--></p>
+                <p>Цена: @car.Price.ToString( "c" )</p><!--ToString("c") - "c" значит формат отображения денежный-->
             </div>
         }
     }
@@ -382,7 +418,7 @@ Add Item: Web->ASP.NET RazorLayout -> __Layout.cshtml_. (Лэйауты прин
     {
         <div>
             <h2>Модель: @car.Name</h2>
-            <p>Цена: @car.Price.ToString( "c" )</p><!--ToString("c") - c значит формат денежный--></p>
+            <p>Цена: @car.Price.ToString( "c" )</p><!--ToString("c") - "c" значит формат отображения денежный-->
         </div>
     }
 }
@@ -570,7 +606,7 @@ c) Обновляем/наполняем List.cshtml
 				<img class="img-thumbnail" src="@car.ImageUrl" alt="@car.Name">
 				<h2>@car.Name</h2>
 				<p>@car.ShortDescription</p>
-				<p>Цена: @car.Price.ToString( "c" )</p><!--ToString("c") - c значит формат денежный--></p>
+				<p>Цена: @car.Price.ToString( "c" )</p><!--ToString("c") - "c" значит формат отображения денежный-->
 				<p><a class="btn btn-warning" href="#">Подробнее</a></p>
 			</div>
 		}
